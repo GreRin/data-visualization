@@ -22,18 +22,21 @@ main {
 	justify-content: center;
 	align-items: center;
 	min-height: 100%;
+	background-color: rgb(239, 245, 253);
 }
 
 .container {
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	height: 100vh;
 	transform: translateY(-120px);
 }
 
-.my_dataviz {
-	
+#title {
+	font-size: 3rem;
+	color: #212529;
 }
 
 footer {
