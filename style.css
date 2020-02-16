@@ -1,0 +1,50 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	width: 100%;
+	overflow:  hidden;
+	border-top: 1px solid #ececec;
+}
+
+.navbar {
+	display: inline-flex;
+	align-items: flex-end !important;
+	justify-content: flex-end;
+}
+
+.navbar-expand-lg {
+    justify-content: flex-end !important;
+}
+
+main {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100%;
+}
+
+.container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	transform: translateY(-120px);
+}
+
+.my_dataviz {
+	
+}
+
+footer {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	margin-top: -120px;
+}
+
+.bg-dark p {
+	color: #007bff;
+	padding: 20px;
+	margin: 0;
+}
