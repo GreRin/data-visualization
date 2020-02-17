@@ -37,6 +37,7 @@
 			<div class="container">
 				<div id="title">United States GDP</div>
 				<div class='visHolder'></div>
+				<div class='visHolder2'></div>
 			</div>
 		</main>
 		<footer class="bg-dark">
@@ -55,6 +56,28 @@
 					.attr('width', width + 80)
 					.attr('height', height + 50);
 
+			var tooltip = d3.select(".visHolder").append("div")
+				.attr("id", "tooltip")
+				.style("opacity", 0);
+
+			var overlay = d3.select('.visHolder').append('div')
+				.attr('class', 'overlay')
+				.style('opacity', 0);
+
+			var svgContainer2 =  d3.select('.visHolder2')
+				.append('svg')
+					.attr("id", "svg2")
+				.attr('width', width + 80)
+				.attr('height', height + 50);
+
+			var tooltip2 = d3.select(".visHolder2").append("div")
+				.attr("id", "tooltip")
+				.style("opacity", 0);
+
+			var overlay2 = d3.select('.visHolder2').append('div')
+				.attr('class', 'overlay')
+				.style('opacity', 0);
+
 			// Append a vertical line to highlight the separation
 			d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json', function(err, data) {
 				
@@ -68,7 +91,19 @@
 					.attr('x', width/2)
 					.attr('y', height + 50)
 					.text('Years')
-					.attr('class', 'info');					
+					.attr('class', 'info');
+
+				svgContainer2.append('text')
+					.attr('transform', 'rotate(-90)')
+					.attr('x', -250)
+					.attr('y', 80)
+					.text('Gross Domestic Product');
+				
+				svgContainer2.append('text')
+					.attr('x', width/2)
+					.attr('y', height + 50)
+					.text('Years')
+					.attr('class', 'info');				
 				
 				var years = data.data.map(function(item) {
 					var quarter;
@@ -99,11 +134,16 @@
 				var xScale = d3.scaleTime()
 					.domain([d3.min(yearsDate), xMax])
 					.range([0, width]);
-				
+			
 				var xAxis = d3.axisBottom()
 					.scale(xScale);
 				
 				var xAxisGroup = svgContainer.append('g')
+					.call(xAxis)
+					.attr('id', 'x-axis')
+					.attr('transform', 'translate(60, 400)');
+
+				var xAxisGroup = svgContainer2.append('g')
 					.call(xAxis)
 					.attr('id', 'x-axis')
 					.attr('transform', 'translate(60, 400)');
@@ -135,6 +175,11 @@
 					.call(yAxis)
 					.attr('id', 'y-axis')
 					.attr('transform', 'translate(60, 0)');
+
+				var yAxisGroup = svgContainer2.append('g')
+					.call(yAxis)
+					.attr('id', 'y-axis')
+					.attr('transform', 'translate(60, 0)');
 					
 				d3.select('svg').selectAll('rect')
 					.data(scaledGDP)
@@ -151,13 +196,89 @@
 						return xScale(yearsDate[i]);
 					})
 					.attr('y', function(d, i) {
-						return height - d;
+						if(height > height/1.28) {
+							return height - d;
+						} else {
+							return height/1.28
+						}
+						
 					})
 					.attr('width', barWidth)
 					.attr('height', function(d) {
 						return d;
 					})
-					.style('fill', 'orange')
+					.style("fill", function(d){ if(d<height/2){return "orange"} else {return "#69b3a2"}})
+					.attr('transform', 'translate(60, 0)')
+					.on('mouseover', function(d, i) {
+						overlay.transition()
+							.duration(0)
+							.style('height', d + 'px')
+							.style('width', barWidth + 'px')
+							.style('opacity', .9)
+							.style('left', (i * barWidth) + 0 + 'px')
+							.style('top', height - d + 'px')
+							.style('transform', 'translateX(60px)');
+						tooltip.transition()
+							.duration(200)
+							.style('opacity', .9);
+						tooltip.html(years[i] + '<br>' + '$' + GDP[i].toFixed(1).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + ' Billion')
+							.attr('data-date', data.data[i][0])
+							.style('left', (i * barWidth) + 30 + 'px')
+							.style('top', height - 100 + 'px')
+							.style('transform', 'translateX(60px)');
+					})
+					.on('mouseout', function(d) {
+						tooltip.transition()
+							.duration(200)
+							.style('opacity', 0);
+						overlay.transition()
+							.duration(200)
+							.style('opacity', 0);
+					});
+
+					d3.select('svg')
+						.append("line")
+							.attr("x1", 60)
+							.attr("x2", width + 60)
+							.attr("y1", height/1.28)
+							.attr("y2", height/1.28)
+							.attr("stroke", "red")
+							.attr("stroke-dasharray", "4")
+					d3.select('svg')
+						.append("text")
+							.attr('x', width/2)
+							.attr('y', height/1.28 - 20)
+							.text("threshold: 4000")
+							.style("font-size", "15px");
+
+				// Vertical
+				d3.select('#svg2').selectAll('rect')
+					.data(scaledGDP)
+					.enter()
+					.append('rect')
+					.attr('data-date', function(d, i) {
+						return data.data[i][0]
+					})
+					.attr('data-gdp', function(d, i) {
+						return data.data[i][1]
+					})
+					.attr('class', 'bar')
+					.attr('x', function(d, i) {
+						return xScale(yearsDate[i]);
+					})
+					.attr('y', function(d, i) {
+						if(height > height/1.28) {
+							return height - d;
+						} else {
+							return height/1.28
+						}
+						
+					})
+					.attr('width', barWidth)
+					.attr('height', function(d) {
+						return d;
+					})
+					.style("fill", function(d){ if(d<height/2){return "orange"} else {return "#69b3a2"}})
 					.attr('transform', 'translate(60, 0)')
 					.on('mouseover', function(d, i) {
 						overlay.transition()
