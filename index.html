@@ -196,7 +196,7 @@
 						return xScale(yearsDate[i]);
 					})
 					.attr('y', function(d, i) {
-						if(d < height - height/1.28) {
+						if(d) {
 							return height - d;
 						} else {
 							return height/1.28 - d;
