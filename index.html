@@ -307,18 +307,18 @@
 							.style('opacity', 0);
 					});
 
-					d3.select('svg')
+					d3.select('#svg2')
 						.append("line")
-							.attr("x1", 60)
-							.attr("x2", width + 60)
-							.attr("y1", height/1.28)
-							.attr("y2", height/1.28)
+							.attr("x1", width / 1.335 + 60)
+							.attr("x2", width / 1.335 + 60)
+							.attr("y1", 0)
+							.attr("y2", height)
 							.attr("stroke", "red")
 							.attr("stroke-dasharray", "4")
-					d3.select('svg')
+					d3.select('#svg2')
 						.append("text")
-							.attr('x', width/2)
-							.attr('y', height/1.28 - 20)
+							.attr('x', width/1.5)
+							.attr('y', height/2 - 20)
 							.text("threshold: 4000")
 							.style("font-size", "15px");
 				});
